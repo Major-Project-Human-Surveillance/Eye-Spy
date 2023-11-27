@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+
+import '../models/body_part.dart';
+import '../models/person.dart';
+
+/// A custom painter that overlays keypoint circles and body joints on a canvas.
+class OverlayView extends CustomPainter {
+  OverlayView({required double scale}) : _scale = scale;
+
+  static const _minConfidence = 0.25;
+  static const _bodyJoints = [
+    [BodyPart.nose, BodyPart.leftEye],
+    [BodyPart.nose, BodyPart.rightEye],
+    [BodyPart.leftEye, BodyPart.leftEar],
+    [BodyPart.rightEye, BodyPart.rightEar],
+    [BodyPart.nose, BodyPart.leftShoulder],
+    [BodyPart.nose, BodyPart.rightShoulder],
+    [BodyPart.leftShoulder, BodyPart.leftElbow],
+    [BodyPart.leftElbow, BodyPart.leftWrist],
+    [BodyPart.rightShoulder, BodyPart.rightElbow],
+    [BodyPart.rightElbow, BodyPart.rightWrist],
+    [BodyPart.leftShoulder, BodyPart.rightShoulder],
+    [BodyPart.leftShoulder, BodyPart.leftHip],
+    [BodyPart.rightShoulder, BodyPart.rightHip],
+    [BodyPart.leftHip, BodyPart.rightHip],
+    [BodyPart.leftHip, BodyPart.leftKnee],
+    [BodyPart.leftKnee, BodyPart.leftAnkle],
+    [BodyPart.rightHip, BodyPart.rightKnee],
+    [BodyPart.rightKnee, BodyPart.rightAnkle]
+  ];
+
+  final double _scale;
+  Person? _persons;
+
+  final Paint _strokePaint = Paint()
+    ..color = Colors.red
+    ..strokeWidth = 5
+    ..style = PaintingStyle.stroke;
+
+  final Paint _circlePaint = Paint()
+    ..color = Colors.green
+    ..strokeWidth = 3
+    ..style = PaintingStyle.fill;
+
+  /// Updates the person data to be displayed on the overlay.
+  void updatePerson(Person persons) {
+    _persons = persons;
+  }
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (_persons == null) return;
+
+    // Draw circles for each keypoint
+    if (_persons!.score > _minConfidence) {
+      _persons?.keyPoints.forEach((element) {
+        canvas.drawCircle(
+            Offset(
+                element.coordinate.dx * _scale, element.coordinate.dy * _scale),
+            5,
+            _circlePaint);
+      });
+
+      // Draw lines for body joints
+      for (var index in _bodyJoints) {
+        final pointA = _persons?.keyPoints[index[0].index].coordinate;
+        final pointB = _persons?.keyPoints[index[1].index].coordinate;
+
+        if (pointA != null && pointB != null) {
+          canvas.drawLine(Offset(pointA.dx * _scale, pointA.dy * _scale),
+              Offset(pointB.dx * _scale, pointB.dy * _scale), _strokePaint);
+        }
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant OverlayView oldDelegate) {
+    return oldDelegate._persons != _persons;
+  }
+}
