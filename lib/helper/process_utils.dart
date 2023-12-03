@@ -8,7 +8,6 @@ import '../models/key_points.dart';
 import '../models/person.dart';
 
 abstract class ProcessUtils {
-
   /// Converts the given input image to a matrix representation.
   ///
   /// The image is converted to a 4-dimensional list, where each element
@@ -41,7 +40,7 @@ abstract class ProcessUtils {
 
   /// The function prepares an output map for a model by initializing nested lists with specific
   /// dimensions and filling them with zeros.
-  /// 
+  ///
   /// Returns:
   ///   The function `prepareOutput()` returns a `Map<int, Object>` containing four key-value pairs. The
   /// keys are integers and the values are lists. Each list is a 4-D array filled with zeros.
@@ -65,7 +64,10 @@ abstract class ProcessUtils {
 
     return outputMap;
   }
-   static Person postProcessModelOutputs(
+
+  static sigmoid(double x) => 1.0 / (1.0 + exp(-x));
+
+  static Person postProcessModelOutputs(
       List<List<List<List<double>>>> heatMap,
       List<List<List<List<double>>>> offsets,
       int inputImageWidth,

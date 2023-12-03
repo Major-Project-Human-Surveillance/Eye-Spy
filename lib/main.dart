@@ -1,7 +1,8 @@
 import 'package:camera/camera.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
-
+import 'home/home_page.dart';
 
 late final List<CameraDescription> _cameras;
 
@@ -11,6 +12,7 @@ late final List<CameraDescription> _cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _cameras = await availableCameras();
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(const MyApp());
 }
 
@@ -22,8 +24,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Pose Estimation',
-        theme: ThemeData(useMaterial3: true),
-       
+        title: 'EyeSpy',
+        darkTheme: FlexThemeData.dark(scheme: FlexScheme.hippieBlue, darkIsTrueBlack: true),
+        themeMode: ThemeMode.dark,
+        home: MyHomePage(cameras: _cameras),
       );
 }
