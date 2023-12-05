@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'dart:isolate';
+import 'dart:isolate';     //support for concurrent programming
 
 import 'package:camera/camera.dart';
-import 'package:image/image.dart';
-import 'package:tflite_flutter/tflite_flutter.dart';
+import 'package:image/image.dart';     //decoding, encoding, manipulating, and processing images 
+import 'package:tflite_flutter/tflite_flutter.dart';  //tensorflow lite interpreter
 
 import '../image_utils.dart';
 import 'process_utils.dart';

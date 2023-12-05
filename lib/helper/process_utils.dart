@@ -28,9 +28,9 @@ abstract class ProcessUtils {
           final pixel = inputImage.getPixel(x, y);
           // normalize -1 to 1
           return [
-            (pixel.r - 127.5) / 127.5,
-            (pixel.g - 127.5) / 127.5,
-            (pixel.b - 127.5) / 127.5
+            (pixel.r - 127.5) / 127.5,    //red
+            (pixel.g - 127.5) / 127.5,    //green
+            (pixel.b - 127.5) / 127.5    //blue
           ];
         },
       ),
