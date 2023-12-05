@@ -5,7 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:image/image.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 
-import '../image_utils.dart';
+import '../Image_utils.dart';
 import 'process_utils.dart';
 
 /// A class that handles inference using isolates.
@@ -67,12 +67,12 @@ class IsolateInference {
       final offsets = outputData[1] as List<List<List<List<double>>>>;
 
       // Post process the output
-      // final person = ProcessUtils.postProcessModelOutputs(
-      //     heatMap, offsets, inputImage.width, inputImage.height,
-      //     originalImage.width, originalImage.height, 0);
+      final person = ProcessUtils.postProcessModelOutputs(
+          heatMap, offsets, inputImage.width, inputImage.height,
+          originalImage.width, originalImage.height, 0);
 
       // Send the result back
-      // message.responsePort.send(person);
+      message.responsePort.send(person);
     }
   }
 }
