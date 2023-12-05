@@ -1,16 +1,22 @@
-# human_surveillance
+# EyeSpy: Real-time Human Detection and Surveillance with Flutter
 
-A new Flutter project.
+EyeSpy is a sophisticated surveillance application developed using Flutter. The application is optimized for real-time performance on mobile devices and leverages the TensorFlow Lite plugin for Flutter to load and run the MoveNet SinglePose Thunder model.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- **Real-time Human Pose Detection**: Starts video recording whenever a human is detected in the camera’s view.
+- **Cross-platform**: Provides a unified API for developing applications that can run on multiple platforms.
+- **User-friendly Interface**: Incorporates design standards based on Flutter Material UI 3.0, ensuring a modern and user-friendly interface.
 
-A few resources to get you started if this is your first Flutter project:
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<br>
+<p>
+<img width="250px" alt="Example" src="https://raw.githubusercontent.com/Major-Project-Human-Surveillance/Eye-Spy/main/screenshort/Screenshot_20231203-163736.png"/>
+<img width="250px" alt="Example" src="https://raw.githubusercontent.com/Major-Project-Human-Surveillance/Eye-Spy/main/screenshort/Screenshot_20231203-163758.png"/>
+</p>
+<br>
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->

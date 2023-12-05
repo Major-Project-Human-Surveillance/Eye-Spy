@@ -8,7 +8,6 @@ import '../models/key_points.dart';
 import '../models/person.dart';
 
 abstract class ProcessUtils {
-
   /// Converts the given input image to a matrix representation.
   ///
   /// The image is converted to a 4-dimensional list, where each element
@@ -41,7 +40,7 @@ abstract class ProcessUtils {
 
   /// The function prepares an output map for a model by initializing nested lists with specific
   /// dimensions and filling them with zeros.
-  /// 
+  ///
   /// Returns:
   ///   The function `prepareOutput()` returns a `Map<int, Object>` containing four key-value pairs. The
   /// keys are integers and the values are lists. Each list is a 4-D array filled with zeros.
@@ -64,5 +63,74 @@ abstract class ProcessUtils {
     outputMap[3] = [List.filled(9, List.filled(9, List.filled(32, 0.0)))];
 
     return outputMap;
+  }
+
+  static sigmoid(double x) => 1.0 / (1.0 + exp(-x));
+
+  static Person postProcessModelOutputs(
+      List<List<List<List<double>>>> heatMap,
+      List<List<List<List<double>>>> offsets,
+      int inputImageWidth,
+      int inputImageHeight,
+      int originalWidth,
+      int originalHeight,
+      double ratio) {
+    final height = heatMap[0].length;
+    final width = heatMap[0][0].length;
+    final numKeyPoints = heatMap[0][0][0].length;
+
+    final keyPointPositions = <List<int>>[];
+    for (var keyPoint = 0; keyPoint < numKeyPoints; keyPoint++) {
+      double maxVal = heatMap[0][0][0][keyPoint];
+      int maxRow = 0;
+      int maxCol = 0;
+
+      // Finding the max keyPoint value in the heatmap across all locations.
+      for (var row = 0; row < height; row++) {
+        for (var col = 0; col < width; col++) {
+          if (heatMap[0][row][col][keyPoint] > maxVal) {
+            maxVal = heatMap[0][row][col][keyPoint];
+            maxRow = row;
+            maxCol = col;
+          }
+        }
+      }
+      keyPointPositions.add([maxRow, maxCol]);
+    }
+
+    // Calculating the x and y coordinates of the keyPoints with offset adjustment.
+    final xCoords = List.filled(numKeyPoints, 0.0);
+    final yCoords = List.filled(numKeyPoints, 0.0);
+    final confidenceScores = List.filled(numKeyPoints, 0.0);
+    for (var idx = 0; idx < keyPointPositions.length; idx++) {
+      final positionY = keyPointPositions[idx][0];
+      final positionX = keyPointPositions[idx][1];
+
+      final inputImageCoordinateY =
+          positionY / (height - 1.0) * inputImageHeight +
+              offsets[0][positionY][positionX][idx];
+      final double ratioHeight = originalHeight / inputImageHeight;
+      yCoords[idx] = inputImageCoordinateY * ratioHeight;
+
+      final inputImageCoordinateX =
+          positionX / (width - 1.0) * inputImageWidth +
+              offsets[0][positionY][positionX][idx + numKeyPoints];
+      final double ratioWidth = originalWidth / inputImageWidth;
+      xCoords[idx] = inputImageCoordinateX * ratioWidth;
+
+      confidenceScores[idx] = sigmoid(heatMap[0][positionY][positionX][idx]);
+    }
+    final keyPointList = <KeyPoint>[];
+    double totalScore = 0.0;
+
+    // Calculating the total score of all keyPoints.
+    for (var value in BodyPart.values) {
+      totalScore += confidenceScores[value.index];
+      keyPointList.add(KeyPoint(
+          bodyPart: value,
+          coordinate: Offset(xCoords[value.index], yCoords[value.index]),
+          score: confidenceScores[value.index]));
+    }
+    return Person(keyPoints: keyPointList, score: totalScore / numKeyPoints);
   }
 }
