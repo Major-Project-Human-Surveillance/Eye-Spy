@@ -36,6 +36,8 @@ class ImageUtils {
     final yBuffer = cameraImage.planes[0].bytes;
     final uBuffer = cameraImage.planes[1].bytes;
     final vBuffer = cameraImage.planes[2].bytes;
+   
+   //The stride is the number of bytes from one row of pixels in memory to the next row.
 
     final int yRowStride = cameraImage.planes[0].bytesPerRow;
     final int yPixelStride = cameraImage.planes[0].bytesPerPixel!;
